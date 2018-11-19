@@ -144,6 +144,19 @@ Map.prototype.move_west = function()
         this.player_lost();
 }
 
+Map.prototype.isObstacle = function()
+{
+   let currentObject = this.cells[this.hero.x][this.hero.y].object;
+   if(currentObject === "Tree" || currentObject === "boulder" || currentObject === "BlackBerry Bushes")
+   {
+       this.hero.energy -= 10;
+       if(this.hero.energy <= 0)
+           this.player_lost();
+       else
+           this.cells[this.hero.x][this.hero.y].object = "None";
+   }
+};
+
 
 
 

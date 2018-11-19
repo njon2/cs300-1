@@ -1,4 +1,9 @@
 <head>
+    <script src="hero.js"></script>
+    <script src="cell.js"></script>
+    <script src="map.js"></script>
+    <script src="loadMap.js"></script>
+    <script src="message.js"></script>
     <script>
         //This function takes map options from form and adds a map file to local storage 
         function file_from_preferences(){
@@ -9,8 +14,9 @@
             var starting_y = form.starting_y.value;
             var starting_whiffles = form.starting_whiffles.value;
             var starting_energy = form.elements.starting_energy.value;
-            mapstring = '[Sample Frugal Game Map][' + size + '][#####################]['+ starting_x + ',' + starting_y + '][' + starting_whiffles +'][' + starting_energy + '][Axe][Axe][Shears][Pretty Rock][#####################][12,12,1,1,None][13,12,0,1,Tree][14,12,0,2,None]';
-            localStorage.setItem('map', JSON.stringify(mapstring) );
+            text = '[Sample Frugal Game Map][' + size + '][#####################]['+ starting_x + ',' + starting_y + '][' + starting_whiffles +'][' + starting_energy + '][Axe][Axe][Shears][Pretty Rock][#####################][12,12,1,1,None][13,12,0,1,Tree][14,12,0,2,None]';
+            dimensions();
+            localStorage.setItem('map', JSON.stringify(game_map) );
             alert(localStorage.getItem('map'));
         }
     </script>
