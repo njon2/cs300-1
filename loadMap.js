@@ -1,5 +1,3 @@
-var game_map;
-var text;
 
 //opens file then calls the parser
 var openFile = function(event){
@@ -9,6 +7,7 @@ var openFile = function(event){
     reader.onload = function(){
         text = reader.result;
         dimensions(text);
+        game_map.update();
     };
     reader.readAsText(input.files[0]);
 };
@@ -63,6 +62,7 @@ function parseInventory(){
 }
 
 function parseCell(){
+    text = text.trim();
     var x = parseNum();
     var y = parseNum();
 
@@ -79,14 +79,18 @@ function parseCell(){
 
 function parseNum(){
     var pattern = /[0-9]+/;
-    var result = pattern.exec(text);
-    text = text.substr(result.index + result[0].length, text.length);
-    return parseInt(result);
+    if(text){
+        var result = pattern.exec(text);
+        text = text.substr(result.index + result[0].length, text.length);
+        return parseInt(result);
+    }
 }
 
 function parseNextString(){
     var pattern = /[A-z ]+/;
-    var result = pattern.exec(text);
-    text = text.substr(result.index + result[0].length, text.length);
-    return result[0];
+    if(text){
+        var result = pattern.exec(text);
+        text = text.substr(result.index + result[0].length, text.length);
+        return result[0];
+    }
 }

@@ -2,32 +2,58 @@
 // stats. Some of the functions in this map class will call functions in the hero class.
 // This map class will communicate extensively with the hero class.
 
+var game_map;
+var text;
 
 //map class constructor
 function Map(width, height, starting_x, starting_y, starting_energy, starting_whiffles) {
-    //Data Members:
-
-    //This creates a new hero, and passes the hero constructor the parameters
-    this.hero = new Hero(starting_x, starting_y, starting_energy, starting_whiffles);
-
-    //width and height of the map
-    this.width = parseInt(width);
-    this.height = parseInt(height);
-
-    //set diamond location
-    this.diamond_x = 2;
-    this.diamond_y = 2;
-
-    //This creates an empty world
-    this.cells = [[]];
-    for (var i = 0; i < this.width; ++i) {
-        this.cells[i] = [];
-        for (var j = 0; j < this.height; ++j) {
-            this.cells[i][j] = new mapCell();
+    //default constructor
+    if(width === undefined){
+        //This creates a new hero, and passes the hero constructor the parameters
+        this.hero = new Hero(0, 0, 10000,10000);
+        this.width = 25;
+        this.height = 25;
+        this.diamond_x = 2;
+        this.diamond_y = 2;
+        this.cells = [[]];
+        for (var i = 0; i < this.width; ++i) {
+            this.cells[i] = [];
+            for (var j = 0; j < this.height; ++j) {
+                this.cells[i][j] = new mapCell();
+            }
         }
+        this.cells[this.diamond_x][this.diamond_y].object = "Royal Diamonds";
+        return;
     }
-
-    this.cells[this.diamond_x][this.diamond_y].object = "Royal Diamonds";
+    //copy constructor
+    if(height === undefined ){
+        var state = width;
+        this.hero = new Hero(state.hero.x, state.hero.y, state.hero.energy, state.hero.whiffles);
+        this.width = state.width;
+        this.height = state.height;
+        this.diamond_x = state.diamond_x;
+        this.diamond_y = state.diamond_y;
+        this.cells = state.cells;
+        this.cells[this.diamond_x][this.diamond_y].object = "Royal Diamonds";
+        return;
+    }
+    else{
+        //This creates a new hero, and passes the hero constructor the parameters
+        this.hero = new Hero(starting_x, starting_y, starting_energy, starting_whiffles);
+        this.width = parseInt(width);
+        this.height = parseInt(height);
+        this.diamond_x = 2;
+        this.diamond_y = 2;
+        this.cells = [[]];
+        for (var i = 0; i < this.width; ++i) {
+            this.cells[i] = [];
+            for (var j = 0; j < this.height; ++j) {
+                this.cells[i][j] = new mapCell();
+            }
+        }
+        this.cells[this.diamond_x][this.diamond_y].object = "Royal Diamonds";
+        return;
+    }
 }
 
 
@@ -53,15 +79,7 @@ Map.prototype.move_north = function()
     this.hero.update_stats(1);
     //Update the Map.
     this.update();
-
-    //check diamonds
-    if ((this.hero.x === this.diamond_x) && (this.hero.y === this.diamond_y))
-        this.player_won();
-
-    //check energy level
-    if (this.hero.energy <= 0)
-        this.player_lost();
-}
+};
 
 // MOVE SOUTH
 Map.prototype.move_south = function()
@@ -80,15 +98,7 @@ Map.prototype.move_south = function()
     this.hero.update_stats(1);
     //Update the Map.
     this.update();
-
-    //check diamonds
-    if ((this.hero.x === this.diamond_x) && (this.hero.y === this.diamond_y))
-        this.player_won();
-
-    //check energy level
-    if (this.hero.energy <= 0)
-        this.player_lost();
-}
+};
 
 //MOVE EAST
 Map.prototype.move_east = function()
@@ -107,15 +117,7 @@ Map.prototype.move_east = function()
     this.hero.update_stats(1);
     //Update the Map.
     this.update();
-
-    //check diamonds
-    if ((this.hero.x === this.diamond_x) && (this.hero.y === this.diamond_y))
-        this.player_won();
-
-    //check energy level
-    if (this.hero.energy <= 0)
-        this.player_lost();
-}
+};
 
 // MOVE WEST
 Map.prototype.move_west = function()
@@ -134,15 +136,7 @@ Map.prototype.move_west = function()
     this.hero.update_stats(1);
     //Update the Map.
     this.update();
-
-    //check diamonds
-    if ((this.hero.x === this.diamond_x) && (this.hero.y === this.diamond_y))
-        this.player_won();
-
-    //check energy level
-    if (this.hero.energy <= 0)
-        this.player_lost();
-}
+};
 
 Map.prototype.isObstacle = function()
 {
@@ -169,28 +163,28 @@ Map.prototype.check_bounds_north = function()
     if(this.hero.y === this.height-1)
         return true;
     return false;
-}
+};
 Map.prototype.check_bounds_south = function()
 {
     //If the hero is at the bottom of the map, return true.
     if(this.hero.y === 0)
         return true;
     return false;
-}
+};
 Map.prototype.check_bounds_east = function()
 {
     //If the hero is at the rightmost side of the map, return true.
     if(this.hero.x === this.width-1)
         return true;
     return false;
-}
+};
 Map.prototype.check_bounds_west = function()
 {
     //If the hero is at the leftmost side of the map, return true.
     if(this.hero.x === 0)
         return true;
     return false;
-}
+};
 
 
 
@@ -200,24 +194,24 @@ Map.prototype.wrap_north = function()
 {
     //If the hero is at the top of the map, set their y to the bottom.
     this.hero.y = 0;
-}
+};
 Map.prototype.wrap_south = function()
 {
     //If the hero is at the bottom of the map, set their y to the top.
     this.hero.y = this.height-1;
-}
+};
 Map.prototype.wrap_east = function()
 {
     //If the hero is at the eastmost edge of the map, set their x to
     //  the leftmost edge.
     this.hero.x = 0;
-}
+};
 Map.prototype.wrap_west = function()
 {
     //If the hero is at the westmost edge of the map, set their x to
     //  the eastmost edge.
     this.hero.x = this.width-1;
-}
+};
 
 
 
@@ -226,7 +220,8 @@ Map.prototype.wrap_west = function()
 Map.prototype.player_won = function()
 {
     window.location.replace("win.html");
-}
+    localStorage.clear();
+};
 
 
 //This function will be called when the player has lost the game.  It
@@ -234,7 +229,8 @@ Map.prototype.player_won = function()
 Map.prototype.player_lost = function()
 {
     window.location.replace("lose.html");
-}
+    localStorage.clear();
+};
 
 
 
@@ -253,17 +249,27 @@ Map.prototype.update = function()
     }
     for (var i = start_i; (i <= this.hero.x + 1) && (i < this.width); ++i) {
         for (var j = start_j; (j <= this.hero.y + 1) && (j < this.height); ++j) {
-            this.cells[i][j].isVisible = true; 
+            this.cells[i][j].isVisible = true;
         }
     }
     //Update the map displayed on the page:
     document.getElementById("map_box").innerHTML = this.map_string();
 
+    // Update the game state information displayed on the page:
     document.getElementById("location").value  = this.hero.display_location();
     document.getElementById("energy").value  = this.hero.display_energy();
     document.getElementById("whiffles").value  = this.hero.display_whiffles();
     document.getElementById("message").value  = message(this.hero, this.cells[this.hero.x][this.hero.y]);
-}
+    localStorage.setItem('map', JSON.stringify(game_map) );
+
+    //check diamonds
+    if ((this.hero.x === this.diamond_x) && (this.hero.y === this.diamond_y))
+        this.player_won();
+
+    //check energy level
+    if (this.hero.energy <= 0)
+        this.player_lost();
+};
 
 
 
@@ -274,7 +280,7 @@ Map.prototype.map_string = function() {
         for (var i = 0; i < this.width; ++i) {
             var cell = this.cells[i][j];
             if (j === this.hero.y && i === this.hero.x) {
-                result += "@";
+                result += "<b>@</b>";
             } else if(cell.isVisible) {
                 switch(cell.object) {
                     case "Tree":
@@ -336,4 +342,3 @@ Map.prototype.map_string = function() {
     }
     return result;
 };
-
