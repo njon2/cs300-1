@@ -63,77 +63,36 @@ function Map(width, height, starting_x, starting_y, starting_energy, starting_wh
 //These functions move the hero.  They call the hero's move functions, and they
 // check to see if the hero needs to wrap to the other side of the map.
 
-//MOVE NORTH
+//The following are wrapper functions for the game.html
 Map.prototype.move_north = function()
 {
-    //First, check to see if the hero is at the edge of the map,
-    // if so, wrap the hero to the other side of the map.
-    if(this.check_bounds_north()) {
-        this.wrap_north();
-    }
-    //Otherwise, move the hero north
-    else {
-        this.hero.move_north();
-    }
-    //update energy
-    this.hero.update_stats(1);
-    //Update the Map.
-    this.update();
+    this.move(0,1);
 };
-
-// MOVE SOUTH
 Map.prototype.move_south = function()
 {
-    //First, check to see if the hero is at the edge of the map,
-    // if so, wrap the hero to the other side of the map.
-    if(this.check_bounds_south()) {
-        this.wrap_south();
-    }
-    //Otherwise, move the hero south
-    else {
-        this.hero.move_south();
-    }
-
-    //update energy
-    this.hero.update_stats(1);
-    //Update the Map.
-    this.update();
+    this.move(0,-1);
 };
-
-//MOVE EAST
 Map.prototype.move_east = function()
 {
-    //First, check to see if the hero is at the edge of the map,
-    // if so, wrap the hero to the other side of the map.
-    if(this.check_bounds_east()) {
-        this.wrap_east();
-    }
-    //Otherwise, move the hero south
-    else {
-        this.hero.move_east();
-    }
-
-    //update energy
-    this.hero.update_stats(1);
-    //Update the Map.
-    this.update();
+    this.move(1,0);
 };
-
-// MOVE WEST
 Map.prototype.move_west = function()
 {
-    //First, check to see if the hero is at the edge of the map,
-    // if so, wrap the hero to the other side of the map.
-    if(this.check_bounds_west()) {
-        this.wrap_west();
-    }
-    //Otherwise, move the hero south
-    else {
-        this.hero.move_west();
-    }
+    this.move(-1,0)
+};
+
+Map.prototype.move = function(x, y)
+{
+    this.hero.x = (this.hero.x + x) % this.width;
+    this.hero.y = (this.hero.y + y) % this.height;
+    if(this.hero.x < 0)
+        this.hero.x = this.width -1;
+    if(this.hero.y < 0)
+        this.hero.y = this.height -1;
 
     //update energy
     this.hero.update_stats(1);
+    this.isObstacle();
     //Update the Map.
     this.update();
 };
@@ -141,7 +100,7 @@ Map.prototype.move_west = function()
 Map.prototype.isObstacle = function()
 {
    let currentObject = this.cells[this.hero.x][this.hero.y].object;
-   if(currentObject === "Tree" || currentObject === "boulder" || currentObject === "BlackBerry Bushes")
+   if(currentObject === "Tree" || currentObject === "Boulder" || currentObject === "BlackBerry Bushes")
    {
        this.hero.energy -= 10;
        if(this.hero.energy <= 0)
@@ -150,69 +109,6 @@ Map.prototype.isObstacle = function()
            this.cells[this.hero.x][this.hero.y].object = "None";
    }
 };
-
-
-
-
-//These functions will check to see if the hero is at the edge of the map.
-//  They will return true if the hero is at the edge of the map, and false
-//  otherwise.
-Map.prototype.check_bounds_north = function()
-{
-    //If the hero is at the top of the map, return true.
-    if(this.hero.y === this.height-1)
-        return true;
-    return false;
-};
-Map.prototype.check_bounds_south = function()
-{
-    //If the hero is at the bottom of the map, return true.
-    if(this.hero.y === 0)
-        return true;
-    return false;
-};
-Map.prototype.check_bounds_east = function()
-{
-    //If the hero is at the rightmost side of the map, return true.
-    if(this.hero.x === this.width-1)
-        return true;
-    return false;
-};
-Map.prototype.check_bounds_west = function()
-{
-    //If the hero is at the leftmost side of the map, return true.
-    if(this.hero.x === 0)
-        return true;
-    return false;
-};
-
-
-
-//These functions will wrap the hero to the other side of the map, when
-//  they are on the edge of the map.
-Map.prototype.wrap_north = function()
-{
-    //If the hero is at the top of the map, set their y to the bottom.
-    this.hero.y = 0;
-};
-Map.prototype.wrap_south = function()
-{
-    //If the hero is at the bottom of the map, set their y to the top.
-    this.hero.y = this.height-1;
-};
-Map.prototype.wrap_east = function()
-{
-    //If the hero is at the eastmost edge of the map, set their x to
-    //  the leftmost edge.
-    this.hero.x = 0;
-};
-Map.prototype.wrap_west = function()
-{
-    //If the hero is at the westmost edge of the map, set their x to
-    //  the eastmost edge.
-    this.hero.x = this.width-1;
-};
-
 
 
 //This function will be called when the player has won the game.  It
